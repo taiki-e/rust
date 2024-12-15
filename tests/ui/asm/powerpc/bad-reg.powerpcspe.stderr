@@ -296,23 +296,21 @@ LL |         asm!("/* {} */", in(xer) x);
    |
    = note: register class `xer` supports these types: 
 
-error: cannot use register `spe_acc`: spe_acc is only available on SPE ABI
-  --> $DIR/bad-reg.rs:136:18
-   |
-LL |         asm!("", out("spe_acc") _); // ok for SPE ABI
-   |                  ^^^^^^^^^^^^^^^^
-
-error: cannot use register `spe_acc`: spe_acc is only available on SPE ABI
-  --> $DIR/bad-reg.rs:138:18
+error: type `i32` cannot be used with this register class
+  --> $DIR/bad-reg.rs:138:32
    |
 LL |         asm!("", in("spe_acc") x);
-   |                  ^^^^^^^^^^^^^^^
+   |                                ^
+   |
+   = note: register class `spe_acc` supports these types: 
 
-error: cannot use register `spe_acc`: spe_acc is only available on SPE ABI
-  --> $DIR/bad-reg.rs:143:18
+error: type `i32` cannot be used with this register class
+  --> $DIR/bad-reg.rs:143:33
    |
 LL |         asm!("", out("spe_acc") x);
-   |                  ^^^^^^^^^^^^^^^^
+   |                                 ^
+   |
+   = note: register class `spe_acc` supports these types: 
 
 error: type `i32` cannot be used with this register class
   --> $DIR/bad-reg.rs:148:38
@@ -322,5 +320,5 @@ LL |         asm!("/* {} */", in(spe_acc) x);
    |
    = note: register class `spe_acc` supports these types: 
 
-error: aborting due to 49 previous errors
+error: aborting due to 48 previous errors
 

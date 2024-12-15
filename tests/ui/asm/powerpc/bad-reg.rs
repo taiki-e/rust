@@ -1,6 +1,8 @@
-//@ revisions: powerpc powerpc64 powerpc64le aix64
+//@ revisions: powerpc powerpcspe powerpc64 powerpc64le aix64
 //@[powerpc] compile-flags: --target powerpc-unknown-linux-gnu
 //@[powerpc] needs-llvm-components: powerpc
+//@[powerpcspe] compile-flags: --target powerpc-unknown-linux-gnuspe
+//@[powerpcspe] needs-llvm-components: powerpc
 //@[powerpc64] compile-flags: --target powerpc64-unknown-linux-gnu
 //@[powerpc64] needs-llvm-components: powerpc
 //@[powerpc64le] compile-flags: --target powerpc64le-unknown-linux-gnu
@@ -64,31 +66,31 @@ fn f() {
         // vreg
         asm!("", out("v0") _); // always ok
         asm!("", in("v0") v32x4); // requires altivec
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         asm!("", out("v0") v32x4); // requires altivec
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         asm!("", in("v0") v64x2); // requires vsx
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         //[powerpc64]~^^ ERROR `vsx` target feature is not enabled
         asm!("", out("v0") v64x2); // requires vsx
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         //[powerpc64]~^^ ERROR `vsx` target feature is not enabled
         asm!("", in("v0") x); // FIXME: should be ok if vsx is available
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         //[powerpc64,powerpc64le,aix64]~^^ ERROR type `i32` cannot be used with this register class
         asm!("", out("v0") x); // FIXME: should be ok if vsx is available
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         //[powerpc64,powerpc64le,aix64]~^^ ERROR type `i32` cannot be used with this register class
         asm!("/* {} */", in(vreg) v32x4); // requires altivec
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         asm!("/* {} */", in(vreg) v64x2); // requires vsx
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         //[powerpc64]~^^ ERROR `vsx` target feature is not enabled
         asm!("/* {} */", in(vreg) x); // FIXME: should be ok if vsx is available
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         //[powerpc64,powerpc64le,aix64]~^^ ERROR type `i32` cannot be used with this register class
         asm!("/* {} */", out(vreg) _); // requires altivec
-        //[powerpc]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
+        //[powerpc,powerpcspe]~^ ERROR register class `vreg` requires at least one of the following target features: altivec, vsx
         // v20-v31 are reserved on AIX with vec-default ABI (this ABI is not currently used in Rust's builtin AIX targets).
         asm!("", out("v20") _);
         asm!("", out("v21") _);
@@ -130,6 +132,26 @@ fn f() {
         //~| ERROR type `i32` cannot be used with this register class
         asm!("/* {} */", out(xer) _);
         //~^ ERROR can only be used as a clobber
+        // spe_acc
+        asm!("", out("spe_acc") _); // ok for SPE ABI
+        //[powerpc,powerpc64,powerpc64le,aix64]~^ ERROR cannot use register `spe_acc`: spe_acc is only available on SPE ABI
+        asm!("", in("spe_acc") x);
+        //[powerpc,powerpc64,powerpc64le,aix64]~^ ERROR cannot use register `spe_acc`: spe_acc is only available on SPE ABI
+        //[powerpc,powerpc64,powerpc64le,aix64]~| ERROR register class `spe_acc` can only be used as a clobber, not as an input or output
+        //[powerpcspe]~^^^ ERROR can only be used as a clobber
+        //[powerpcspe]~| ERROR type `i32` cannot be used with this register class
+        asm!("", out("spe_acc") x);
+        //[powerpc,powerpc64,powerpc64le,aix64]~^ ERROR cannot use register `spe_acc`: spe_acc is only available on SPE ABI
+        //[powerpc,powerpc64,powerpc64le,aix64]~| ERROR register class `spe_acc` can only be used as a clobber, not as an input or output
+        //[powerpcspe]~^^^ ERROR can only be used as a clobber
+        //[powerpcspe]~| ERROR type `i32` cannot be used with this register class
+        asm!("/* {} */", in(spe_acc) x);
+        //[powerpc,powerpc64,powerpc64le,aix64]~^ ERROR register class `spe_acc` can only be used as a clobber, not as an input or output
+        //[powerpcspe]~^^ ERROR can only be used as a clobber
+        //~| ERROR type `i32` cannot be used with this register class
+        asm!("/* {} */", out(spe_acc) _);
+        //[powerpc,powerpc64,powerpc64le,aix64]~^ ERROR register class `spe_acc` can only be used as a clobber, not as an input or output
+        //[powerpcspe]~^^ ERROR can only be used as a clobber
 
         // Overlapping-only registers
         asm!("", out("cr") _, out("cr0") _);

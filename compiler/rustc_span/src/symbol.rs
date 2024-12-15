@@ -1896,6 +1896,7 @@ symbols! {
         slicing_syntax,
         soft,
         sparc_target_feature,
+        spe_acc,
         specialization,
         speed,
         spotlight,

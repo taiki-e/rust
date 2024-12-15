@@ -37,6 +37,7 @@ This feature tracks `asm!` and `global_asm!` support for the following architect
 | PowerPC      | `vreg`         | `v[0-31]`                          | `v`                  |
 | PowerPC      | `cr`           | `cr[0-7]`, `cr`                    | Only clobbers        |
 | PowerPC      | `xer`          | `xer`                              | Only clobbers        |
+| PowerPC      | `spe_acc`      | `spe_acc`                          | Only clobbers        |
 | wasm32       | `local`        | None\*                             | `r`                  |
 | BPF          | `reg`          | `r[0-10]`                          | `r`                  |
 | BPF          | `wreg`         | `w[0-10]`                          | `w`                  |
@@ -79,6 +80,7 @@ This feature tracks `asm!` and `global_asm!` support for the following architect
 | PowerPC      | `vreg`                          | `vsx`          | `f32`, `f64`, `i64x2`, `f64x2`          |
 | PowerPC      | `cr`                            | N/A            | Only clobbers                           |
 | PowerPC      | `xer`                           | N/A            | Only clobbers                           |
+| PowerPC      | `spe_acc`                       | N/A            | Only clobbers                           |
 | wasm32       | `local`                         | None           | `i8` `i16` `i32` `i64` `f32` `f64`      |
 | BPF          | `reg`                           | None           | `i8` `i16` `i32` `i64`                  |
 | BPF          | `wreg`                          | `alu32`        | `i8` `i16` `i32`                        |

@@ -14,6 +14,7 @@ def_reg_class! {
         vreg,
         cr,
         xer,
+        spe_acc,
     }
 }
 
@@ -56,7 +57,7 @@ impl PowerPCInlineAsmRegClass {
                 altivec: VecI8(16), VecI16(8), VecI32(4), VecF32(4);
                 vsx: F32, F64, VecI64(2), VecF64(2);
             },
-            Self::cr | Self::xer => &[],
+            Self::cr | Self::xer | Self::spe_acc => &[],
         }
     }
 }
@@ -91,6 +92,20 @@ fn reserved_v20to31(
     } else {
         Ok(())
     }
+}
+
+pub(crate) fn is_spe(arch: InlineAsmArch, target: &Target) -> bool {
+    arch == InlineAsmArch::PowerPC && target.options.abi == "spe"
+}
+
+fn spe(
+    arch: InlineAsmArch,
+    _reloc_model: RelocModel,
+    _target_features: &FxIndexSet<Symbol>,
+    target: &Target,
+    _is_clobber: bool,
+) -> Result<(), &'static str> {
+    if is_spe(arch, target) { Ok(()) } else { Err("spe_acc is only available on SPE ABI") }
 }
 
 def_regs! {
@@ -196,6 +211,7 @@ def_regs! {
         cr6: cr = ["cr6"],
         cr7: cr = ["cr7"],
         xer: xer = ["xer"],
+        spe_acc: spe_acc = ["spe_acc"] % spe,
         #error = ["r1", "1", "sp"] =>
             "the stack pointer cannot be used as an operand for inline asm",
         #error = ["r2", "2"] =>
@@ -247,7 +263,7 @@ impl PowerPCInlineAsmReg {
             (v24, "24"), (v25, "25"), (v26, "26"), (v27, "27"), (v28, "28"), (v29, "29"), (v30, "30"), (v31, "31");
             (cr, "cr");
             (cr0, "0"), (cr1, "1"), (cr2, "2"), (cr3, "3"), (cr4, "4"), (cr5, "5"), (cr6, "6"), (cr7, "7");
-            (xer, "xer");
+            (xer, "xer"), (spe_acc, "spe_acc");
         }
     }
 

@@ -658,7 +658,8 @@ fn reg_to_gcc(reg: InlineAsmRegOrRegClass) -> ConstraintOrRegister {
             InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::freg) => "f",
             InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::vreg) => "v",
             InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::cr)
-            | InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::xer) => {
+            | InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::xer)
+            | InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::spe_acc) => {
                 unreachable!("clobber-only")
             }
             InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::reg) => "r",
@@ -740,7 +741,8 @@ fn dummy_output_type<'gcc, 'tcx>(cx: &CodegenCx<'gcc, 'tcx>, reg: InlineAsmRegCl
             cx.type_vector(cx.type_i32(), 4)
         }
         InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::cr)
-        | InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::xer) => {
+        | InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::xer)
+        | InlineAsmRegClass::PowerPC(PowerPCInlineAsmRegClass::spe_acc) => {
             unreachable!("clobber-only")
         }
         InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::reg) => cx.type_i32(),
