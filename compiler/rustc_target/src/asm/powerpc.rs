@@ -6,6 +6,36 @@ use rustc_span::Symbol;
 use super::{InlineAsmArch, InlineAsmType, ModifierInfo};
 use crate::spec::{RelocModel, Target};
 
+/*
+
+Support accumulator register (clobber-only) in powerpcspe inline assembly
+
+
+Follow-up to https://github.com/rust-lang/rust/pull/131341 ("Support clobber_abi and vector registers (clobber-only) in PowerPC inline assembly").
+
+There was no mention of SPE ABI in the old document referenced in that PR, but according to the ABI document published in 2011 by Power.org, in SPE ABI, SPE accumulator register is marked as volatile.
+Refs: ["Table 3-24. SPE Register Roles" in the ABI docs](https://web.archive.org/web/20120608163804/https://www.power.org/resources/downloads/Power-Arch-32-bit-ABI-supp-1.0-Unified.pdf#page=36).
+
+### Unresolved issue
+
+TODO: should be treated as flag?
+
+:
+[Section 1.2 "Register Model" in Signal Processing Engine (SPE) Programming Environments Manual](https://www.nxp.com/docs/en/reference-manual/SPEPEM.pdf#page=24)
+
+> The accumulator is partially visible to the programmer in that its results do not have to be explicitly read to use them. Instead, they are always copied into a 64-bit destination GPR specified as part of the instruction.
+
+---
+
+cc @BKPepe (target maintainer of [powerpc-unknown-linux-muslspe](https://doc.rust-lang.org/nightly/rustc/platform-support/powerpc-unknown-linux-muslspe.html#target-maintainers))
+cc @biabbas (target maintainer of [powerpc-wrs-vxworks-spe](https://doc.rust-lang.org/nightly/rustc/platform-support/vxworks.html))
+
+
+r? @workingjubilee or @Amanieu
+
+@rustbot label +O-PowerPC +A-inline-assembly
+*/
+
 def_reg_class! {
     PowerPC PowerPCInlineAsmRegClass {
         reg,
