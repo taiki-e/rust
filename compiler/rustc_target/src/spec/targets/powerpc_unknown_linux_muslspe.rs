@@ -24,7 +24,7 @@ pub(crate) fn target() -> Target {
         options: TargetOptions {
             abi: "spe".into(),
             endian: Endian::Big,
-            features: "+msync".into(),
+            features: "+msync,+spe".into(),
             mcount: "_mcount".into(),
             ..base
         },

@@ -25,7 +25,7 @@ pub(crate) fn target() -> Target {
             abi: "spe".into(),
             endian: Endian::Big,
             // feature msync would disable instruction 'fsync' which is not supported by fsl_p1p2
-            features: "+secure-plt,+msync".into(),
+            features: "+secure-plt,+msync,+spe".into(),
             ..base
         },
     }
