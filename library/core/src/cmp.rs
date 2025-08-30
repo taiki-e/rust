@@ -660,6 +660,10 @@ impl Ordering {
 /// v.sort_by_key(|&num| (num > 3, Reverse(num)));
 /// assert_eq!(v, vec![3, 2, 1, 6, 5, 4]);
 /// ```
+///
+/// # Layout
+///
+/// `Reverse<T>` is guaranteed to have the same layout and ABI as `T`.
 #[derive(PartialEq, Eq, Debug, Copy, Default, Hash)]
 #[stable(feature = "reverse_cmp_key", since = "1.19.0")]
 #[repr(transparent)]
