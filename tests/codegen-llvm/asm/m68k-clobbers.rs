@@ -11,7 +11,7 @@ extern crate minicore;
 use minicore::*;
 
 // CHECK-LABEL: @flags_clobber
-// CHECK: call void asm sideeffect "", "~{ccr}"()
+// CHECK: call void asm sideeffect "", "~{ccr},~{fpsr}"()
 #[no_mangle]
 pub unsafe fn flags_clobber() {
     asm!("", options(nostack, nomem));

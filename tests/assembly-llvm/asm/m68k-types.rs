@@ -1,6 +1,6 @@
 //@ add-core-stubs
 //@ assembly-output: emit-asm
-//@ compile-flags: --target m68k-unknown-linux-gnu
+//@ compile-flags: --target m68k-unknown-linux-gnu -C target-feature=+isa-68881
 //@ needs-llvm-components: m68k
 
 #![feature(no_core, asm_experimental_arch)]
@@ -12,6 +12,12 @@ extern crate minicore;
 use minicore::*;
 
 type ptr = *const u64;
+
+// TODO: sym_fn/sym_static test
+extern "C" {
+    fn extern_func();
+    static extern_static: u8;
+}
 
 macro_rules! check {
     ($func:ident $ty:ident $class:ident $mov:literal) => {
@@ -65,3 +71,15 @@ check!(reg_i16 i16 reg "move.w");
 // CHECK: move.l %{{[da][0-9]}}, %{{[da][0-9]}}
 // CHECK: ;NO_APP
 check!(reg_i32 i32 reg "move.l");
+
+// CHECK-LABEL: freg_f32:
+// CHECK: ;APP
+// CHECK: fmove.x %f{{[0-9]}}, %f{{[0-9]}}
+// CHECK: ;NO_APP
+check!(freg_f32 f32 freg "fmove.x");
+
+// CHECK-LABEL: freg_f64:
+// CHECK: ;APP
+// CHECK: fmove.x %f{{[0-9]}}, %f{{[0-9]}}
+// CHECK: ;NO_APP
+check!(freg_f64 f64 freg "fmove.x");

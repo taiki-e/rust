@@ -1247,6 +1247,7 @@ symbols! {
         irrefutable_let_patterns,
         is,
         is_val_statically_known,
+        isa_68881: "isa-68881",
         isa_attribute,
         isize,
         isize_legacy_const_max,

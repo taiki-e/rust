@@ -4,6 +4,39 @@ use rustc_span::Symbol;
 
 use super::{InlineAsmArch, InlineAsmType, ModifierInfo};
 
+/*
+Support clobber_abi and floating-point registers (clobber-only) in m68k inline assembly
+
+
+
+This supports `clobber_abi` which is one of the requirements of stabilization mentioned in #93335.
+
+This basically does a similar thing I did in https://github.com/rust-lang/rust/pull/130630 (for s390x) and https://github.com/rust-lang/rust/pull/131341 (for powerpc/powerpc64/powerpc64le), but for m68k.
+- This also supports floating-point registers (as `freg`) as clobber-only, which need to support clobbering of them to implement `clobber_abi`.
+- `freg` should be able to accept f32 and f64 as input/output if the unstable `isa-68881` target feature is enabled, but LLVM doesn't support constraint (["f" in GCC](https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html)) for this (https://github.com/llvm/llvm-project/issues/61806). So I have not implemented it in this PR.
+
+Refs:
+- Calling Convention:
+  - https://m680x0.github.io/doc/abi.html#calling-convention
+  - GCC https://github.com/gcc-mirror/gcc/blob/releases/gcc-15.2.0/gcc/config/m68k/m68k.h#L356
+  - LLVM https://github.com/llvm/llvm-project/blob/llvmorg-21.1.0/llvm/lib/Target/M68k/M68kCallingConv.td
+- Register info:
+  - LLVM https://github.com/llvm/llvm-project/blob/llvmorg-21.1.0/llvm/lib/Target/M68k/M68kRegisterInfo.td#L71-L77
+
+cc @glaubitz @ricky26 (designated developers of [m68k-unknown-linux-gnu](https://doc.rust-lang.org/nightly/rustc/platform-support/m68k-unknown-linux-gnu.html#designated-developers))
+cc @knickish
+
+@rustbot label +O-motorola68k +A-inline-assembly
+
+
+
+no f in
+https://github.com/llvm/llvm-project/blob/llvmorg-21.1.0/clang/lib/Basic/Targets/M68k.cpp#L147
+*/
+
+// https://github.com/llvm/llvm-project/blob/llvmorg-19.1.0/clang/lib/Basic/Targets/M68k.cpp#L128
+// https://github.com/gcc-mirror/gcc/blob/980929bdb80f1a1490caab5acc6d9740e0f9b539/gcc/config/m68k/m68k.h#L686
+
 def_reg_class! {
     M68k M68kInlineAsmRegClass {
         reg,

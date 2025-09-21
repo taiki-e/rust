@@ -683,9 +683,7 @@ fn reg_class_to_gcc(reg_class: InlineAsmRegClass) -> &'static str {
         InlineAsmRegClass::M68k(M68kInlineAsmRegClass::reg) => "r",
         InlineAsmRegClass::M68k(M68kInlineAsmRegClass::reg_addr) => "a",
         InlineAsmRegClass::M68k(M68kInlineAsmRegClass::reg_data) => "d",
-        InlineAsmRegClass::M68k(M68kInlineAsmRegClass::freg) => {
-            unreachable!("clobber-only")
-        }
+        InlineAsmRegClass::M68k(M68kInlineAsmRegClass::freg) => "f",
         InlineAsmRegClass::CSKY(CSKYInlineAsmRegClass::reg) => "r",
         InlineAsmRegClass::CSKY(CSKYInlineAsmRegClass::freg) => "f",
         InlineAsmRegClass::Mips(MipsInlineAsmRegClass::reg) => "d", // more specific than "r"
@@ -824,9 +822,7 @@ fn dummy_output_type<'gcc, 'tcx>(cx: &CodegenCx<'gcc, 'tcx>, reg: InlineAsmRegCl
         InlineAsmRegClass::M68k(M68kInlineAsmRegClass::reg) => cx.type_i32(),
         InlineAsmRegClass::M68k(M68kInlineAsmRegClass::reg_addr) => cx.type_i32(),
         InlineAsmRegClass::M68k(M68kInlineAsmRegClass::reg_data) => cx.type_i32(),
-        InlineAsmRegClass::M68k(M68kInlineAsmRegClass::freg) => {
-            unreachable!("clobber-only")
-        }
+        InlineAsmRegClass::M68k(M68kInlineAsmRegClass::freg) => cx.type_f64(),
         InlineAsmRegClass::CSKY(CSKYInlineAsmRegClass::reg) => cx.type_i32(),
         InlineAsmRegClass::CSKY(CSKYInlineAsmRegClass::freg) => cx.type_f32(),
         InlineAsmRegClass::SpirV(SpirVInlineAsmRegClass::reg) => {
