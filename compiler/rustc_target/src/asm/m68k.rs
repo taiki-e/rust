@@ -9,6 +9,7 @@ def_reg_class! {
         reg,
         reg_addr,
         reg_data,
+        freg,
     }
 }
 
@@ -41,6 +42,9 @@ impl M68kInlineAsmRegClass {
             Self::reg => types! { _: I16, I32; },
             Self::reg_data => types! { _: I8, I16, I32; },
             Self::reg_addr => types! { _: I16, I32; },
+            // FIXME: GCC has "f" constraint for this, but not yet supported in LLVM: https://github.com/llvm/llvm-project/issues/61806
+            // Self::freg => types! { isa_68881: F32, F64; },
+            Self::freg => &[],
         }
     }
 }
@@ -59,6 +63,14 @@ def_regs! {
         a1: reg, reg_addr = ["a1"],
         a2: reg, reg_addr = ["a2"],
         a3: reg, reg_addr = ["a3"],
+        fp0: freg = ["fp0"],
+        fp1: freg = ["fp1"],
+        fp2: freg = ["fp2"],
+        fp3: freg = ["fp3"],
+        fp4: freg = ["fp4"],
+        fp5: freg = ["fp5"],
+        fp6: freg = ["fp6"],
+        fp7: freg = ["fp7"],
         #error = ["a4"] =>
             "a4 is used internally by LLVM and cannot be used as an operand for inline asm",
         #error = ["a5", "bp"] =>

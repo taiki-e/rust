@@ -49,6 +49,7 @@ This feature tracks `asm!` and `global_asm!` support for the following architect
 | M68k         | `reg`          | `d[0-7]`, `a[0-7]`                 | `r`                  |
 | M68k         | `reg_data`     | `d[0-7]`                           | `d`                  |
 | M68k         | `reg_addr`     | `a[0-3]`                           | `a`                  |
+| M68k         | `freg`         | `fp[0-7]`                          | Only clobbers        |
 | CSKY         | `reg`          | `r[0-31]`                          | `r`                  |
 | CSKY         | `freg`         | `f[0-31]`                          | `f`                  |
 | SPARC        | `reg`          | `r[2-29]`                          | `r`                  |
@@ -87,6 +88,7 @@ This feature tracks `asm!` and `global_asm!` support for the following architect
 | MSP430       | `reg`                           | None           | `i8`, `i16`                             |
 | M68k         | `reg`, `reg_addr`               | None           | `i16`, `i32`                            |
 | M68k         | `reg_data`                      | None           | `i8`, `i16`, `i32`                      |
+| M68k         | `freg`                          | N/A            | Only clobbers                           |
 | CSKY         | `reg`                           | None           | `i8`, `i16`, `i32`                      |
 | CSKY         | `freg`                          | None           | `f32`,                                  |
 | SPARC        | `reg`                           | None           | `i8`, `i16`, `i32`, `i64` (SPARC64 only) |
