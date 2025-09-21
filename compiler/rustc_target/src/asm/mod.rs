@@ -942,6 +942,7 @@ pub enum InlineAsmClobberAbi {
     S390x,
     Bpf,
     Msp430,
+    M68k,
 }
 
 impl InlineAsmClobberAbi {
@@ -1016,6 +1017,10 @@ impl InlineAsmClobberAbi {
             },
             InlineAsmArch::Msp430 => match name {
                 "C" | "system" => Ok(InlineAsmClobberAbi::Msp430),
+                _ => Err(&["C", "system"]),
+            },
+            InlineAsmArch::M68k => match name {
+                "C" | "system" => Ok(InlineAsmClobberAbi::M68k),
                 _ => Err(&["C", "system"]),
             },
             _ => Err(&[]),
@@ -1300,6 +1305,15 @@ impl InlineAsmClobberAbi {
             InlineAsmClobberAbi::Msp430 => clobbered_regs! {
                 Msp430 Msp430InlineAsmReg {
                     r11, r12, r13, r14, r15,
+                }
+            },
+            InlineAsmClobberAbi::M68k => clobbered_regs! {
+                // Refs: https://m680x0.github.io/doc/abi.html#calling-convention
+
+                M68k M68kInlineAsmReg {
+                    d0, d1,
+                    a0, a1,
+                    fp0, fp1,
                 }
             },
         }
