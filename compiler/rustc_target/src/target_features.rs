@@ -599,6 +599,8 @@ static POWERPC_FEATURES: &[(&str, Stability, ImpliedFeatures)] = &[
 const MIPS_FEATURES: &[(&str, Stability, ImpliedFeatures)] = &[
     // tidy-alphabetical-start
     ("fp64", Unstable(sym::mips_target_feature), &[]),
+    ("mips32r6", Forbidden { reason: "use mips32r6 target instead", hard_error: false }, &[]),
+    ("mips64r6", Forbidden { reason: "use mips64r6 target instead", hard_error: false }, &[]),
     ("msa", Unstable(sym::mips_target_feature), &[]),
     ("virt", Unstable(sym::mips_target_feature), &[]),
     // tidy-alphabetical-end
@@ -1415,6 +1417,18 @@ impl Target {
                 // and backends of them only support assembly for devices have no SRAM.
                 // See the discussion in https://github.com/rust-lang/rust/pull/146900 for more.
                 FeatureConstraints { required: &["sram"], incompatible: &[] }
+            }
+            Arch::Mips => {
+                FeatureConstraints { required: &[], incompatible: &["mips32r6", "mips64r6"] }
+            }
+            Arch::Mips64 => {
+                FeatureConstraints { required: &[], incompatible: &["mips32r6", "mips64r6"] }
+            }
+            Arch::Mips32r6 => {
+                FeatureConstraints { required: &["mips32r6"], incompatible: &["mips64r6"] }
+            }
+            Arch::Mips64r6 => {
+                FeatureConstraints { required: &["mips64r6"], incompatible: &["mips32r6"] }
             }
             Arch::Wasm32 | Arch::Wasm64 => {
                 // We only support one ABI on wasm at the moment.
